@@ -1,4 +1,4 @@
 {
-	"backup_dir"	: 	"/Users/francis/test"
-	"max_size"	: 	50000000
+	"backup_dir"	: 	"/Users/francis/test",
+	"max_storage"	: 	50000000
 }

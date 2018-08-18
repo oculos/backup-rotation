@@ -5,6 +5,8 @@ from datetime import datetime
 backup_dir = ""
 max_size = 0
 files = []
+deleted_files = []
+
 with open("settings.json","r") as settings:
     js = json.load(settings)
     backup_dir = js['backup_dir']
@@ -23,6 +25,8 @@ def list_files(path):
     for fil in just_files:
         attr = {}
         attr['full_path'] = os.path.join(path,fil)
+        attr['path'] = path
+        attr['name'] = fil
         attr['size'] = os.path.getsize(attr["full_path"])
         attr['created'] = os.path.getctime(attr['full_path'])
         files.append(attr)   
@@ -33,10 +37,17 @@ def list_files(path):
 list_files(backup_dir)
 files = sorted(files, key = lambda k: k['created'])
 size = sum(item['size'] for item in files) 
-print "Before: "+str(size) 
+deleted = False
 while size > max_size:
+    deleted = True
     del_fil = files.pop(0)
+    deleted_files.append(del_fil)
     size = size - del_fil['size']
     os.remove(del_fil['full_path'])
-print files
-print "After: "+str(sum(item['size'] for item in files)) 
+
+if deleted:
+    with open("deleted.log","a") as f:
+        date = str(datetime.now()).split('.')[0]
+        f.write(date+' [INFO] '+str(len(deleted_files))+' files deleted, '+str(sum(item['size'] for item in deleted_files))+' bytes free\'d. Current used space on directory: '+str(size)+' bytes. Below is the list of deleted files:\n')
+        for fil in deleted_files:
+            f.write('\t- '+fil['name']+' from '+fil['path']+"\n")
