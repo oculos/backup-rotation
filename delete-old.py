@@ -15,6 +15,10 @@ with open("settings.json","r") as settings:
 if backup_dir == "": 
     print ("Please configure which directory to work on.")
     exit(1)
+
+if not os.path.exists(backup_dir):
+    print("The path for deleting files does not exist or is not mounted.")
+    exit(1)
     
 def list_files(path):
     global files
