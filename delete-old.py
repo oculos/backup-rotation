@@ -7,6 +7,9 @@ max_size = 0
 files = []
 deleted_files = []
 
+pathname = os.path.dirname(os.path.realpath(__file__))
+os.chdir(pathname)
+
 with open("settings.json","r") as settings:
     js = json.load(settings)
     backup_dir = js['backup_dir']
